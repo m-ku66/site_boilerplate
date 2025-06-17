@@ -11,6 +11,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
 @import "tailwindcss";
 
+body {
+  font-family: var(--font-family, "Inter", sans-serif);
+}
+
 /* 🎯 Scroll snap utility classes for our component */
 
 /* Horizontal scroll snap types */
