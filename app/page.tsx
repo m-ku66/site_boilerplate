@@ -59,13 +59,13 @@ export default function Home() {
         <div className="mt-8 space-x-4 relative z-10">
           <button
             onClick={() => openModal('Welcome to the store demo! This modal is powered by Zustand!')}
-            className="bg-white text-purple-700 px-6 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-all relative z-0"
+            className="bg-white text-purple-700 px-6 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-all relative z-[1]"
           >
             Open Modal Demo
           </button>
           <button
             onClick={() => showToast('Toast notification working perfectly!', 'success')}
-            className="bg-purple-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-600 transition-all relative z-0"
+            className="bg-purple-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-600 transition-all relative z-[1]"
           >
             Show Toast
           </button>
@@ -151,8 +151,8 @@ export default function Home() {
                 key={themeName}
                 onClick={() => setTheme(themeName)}
                 className={`block w-full text-left px-3 py-2 rounded text-sm transition-all pointer-events-auto ${currentTheme.name === themeName
-                    ? 'bg-white text-black'
-                    : 'text-white hover:bg-white hover:bg-opacity-20'
+                  ? 'bg-white text-black'
+                  : 'text-white hover:bg-white hover:bg-opacity-20'
                   }`}
               >
                 {themeName.charAt(0).toUpperCase() + themeName.slice(1)}
@@ -170,8 +170,8 @@ export default function Home() {
             <button
               onClick={() => setLanguage('en')}
               className={`block w-full text-left px-3 py-2 rounded text-sm transition-all pointer-events-auto ${currentLanguage === 'en'
-                  ? 'bg-white text-black'
-                  : 'text-white hover:bg-white hover:bg-opacity-20'
+                ? 'bg-white text-black'
+                : 'text-white hover:bg-white hover:bg-opacity-20'
                 }`}
             >
               🇺🇸 English
@@ -179,8 +179,8 @@ export default function Home() {
             <button
               onClick={() => setLanguage('ja')}
               className={`block w-full text-left px-3 py-2 rounded text-sm transition-all pointer-events-auto ${currentLanguage === 'ja'
-                  ? 'bg-white text-black'
-                  : 'text-white hover:bg-white hover:bg-opacity-20'
+                ? 'bg-white text-black'
+                : 'text-white hover:bg-white hover:bg-opacity-20'
                 }`}
             >
               🇯🇵 日本語
@@ -214,9 +214,9 @@ export default function Home() {
       {ui.isToastOpen && (
         <UIElement layer="overlay" zone="top-center" className="p-6 pointer-events-none">
           <div className={`rounded-lg px-6 py-4 text-white font-medium pointer-events-auto ${ui.toastType === 'success' ? 'bg-green-500' :
-              ui.toastType === 'error' ? 'bg-red-500' :
-                ui.toastType === 'warning' ? 'bg-yellow-500' :
-                  'bg-blue-500'
+            ui.toastType === 'error' ? 'bg-red-500' :
+              ui.toastType === 'warning' ? 'bg-yellow-500' :
+                'bg-blue-500'
             }`}>
             {ui.toastMessage}
           </div>

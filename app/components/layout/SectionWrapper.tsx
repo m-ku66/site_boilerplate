@@ -55,13 +55,17 @@ export const SectionWrapper: React.FC<SectionWrapperConfig> = ({
     // Auto-show UI overlay when we detect UI elements
     const shouldShowUIOverlay = uiElements.length > 0;
 
-    // Find all section elements when they mount
+    // Find all section elements when they mount - only actual sections, not UI elements
     useEffect(() => {
         if (containerRef.current) {
-            const elements = Array.from(containerRef.current.children).filter(
-                (child) => child instanceof HTMLElement
+            // Only get the section wrapper divs, not UIElements
+            const sectionWrappers = Array.from(containerRef.current.children).filter(
+                (child, index) => {
+                    // Only include elements that correspond to actual sections
+                    return child instanceof HTMLElement && index < sections.length;
+                }
             ) as HTMLElement[];
-            setSectionElements(elements);
+            setSectionElements(sectionWrappers);
         }
     }, [sections]);
 
@@ -175,7 +179,7 @@ export const SectionWrapper: React.FC<SectionWrapperConfig> = ({
                 {sections.map((child, index) => (
                     <div
                         key={index}
-                        className={`
+                        className={`z-[1]
               ${enableScrollSnap ? 'scroll-snap-start' : ''} flex-shrink-0
               ${direction === 'horizontal' ? 'w-full h-full' : 'min-h-screen w-full'}
             `}
@@ -193,19 +197,19 @@ export const SectionWrapper: React.FC<SectionWrapperConfig> = ({
             )}
 
             {/* Navigation dots */}
-            {showNavigation && sectionElements.length > 0 && (
+            {showNavigation && sections.length > 0 && (
                 <div className={getNavigationClasses()}>
-                    {sectionElements.map((_, index) => (
+                    {sections.map((_, index) => (
                         <motion.button
                             key={index}
                             onClick={() => scrollToSection(index)}
                             className={`
-                w-3 h-3 rounded-full transition-all duration-300 border-none cursor-pointer
-                ${currentSection === index
+                    w-3 h-3 rounded-full transition-all duration-300 border-none cursor-pointer
+                    ${currentSection === index
                                     ? 'bg-blue-600 opacity-100 scale-110'
                                     : 'bg-gray-400 opacity-40 scale-100'
                                 }
-              `}
+                `}
                             whileHover={{
                                 scale: 1.2,
                                 opacity: 0.8
