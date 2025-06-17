@@ -5,6 +5,7 @@ import { useRef, useEffect, useState, useMemo, isValidElement } from 'react';
 import { SectionWrapperProps } from '@/app/types';
 import { UIGridOverlay } from '@/app/components/ui/UIGridOverlay';
 import { UIElement } from '@/app/components/ui/UIElement';
+import { useViewport, getBreakpointValue } from '@/app/hooks/useViewport';
 
 interface SectionWrapperConfig extends SectionWrapperProps {
     showNavigation?: boolean;
@@ -27,6 +28,9 @@ export const SectionWrapper: React.FC<SectionWrapperConfig> = ({
     debug = false,
     onSectionChange
 }) => {
+    // Get viewport info for responsive behavior
+    const { breakpoint, isMobile, isTouch } = useViewport();
+
     // Refs and state for tracking scroll behavior
     const containerRef = useRef<HTMLDivElement>(null);
     const [sectionElements, setSectionElements] = useState<HTMLElement[]>([]);
@@ -72,63 +76,60 @@ export const SectionWrapper: React.FC<SectionWrapperConfig> = ({
     // Track scroll position and determine active section
     useMotionValueEvent(
         direction === 'horizontal' ? scrollX : scrollY,
-        "change",
+        'change',
         (latest) => {
             if (sectionElements.length === 0) return;
 
-            const container = containerRef.current;
-            if (!container) return;
+            let newSection = 0;
+            const scrollPosition = latest;
+            const threshold = direction === 'horizontal'
+                ? window.innerWidth / 2
+                : window.innerHeight / 2;
 
-            let activeSection = 0;
+            sectionElements.forEach((element, index) => {
+                const rect = element.getBoundingClientRect();
+                const elementPosition = direction === 'horizontal'
+                    ? rect.left
+                    : rect.top;
 
-            if (direction === 'horizontal') {
-                const scrollPosition = latest;
-                sectionElements.forEach((section, index) => {
-                    const sectionLeft = section.offsetLeft;
-                    if (scrollPosition >= sectionLeft - container.clientWidth * 0.5) {
-                        activeSection = index;
-                    }
-                });
-            } else {
-                const scrollPosition = latest;
-                sectionElements.forEach((section, index) => {
-                    const sectionTop = section.offsetTop;
-                    if (scrollPosition >= sectionTop - container.clientHeight * 0.5) {
-                        activeSection = index;
-                    }
-                });
-            }
+                if (Math.abs(elementPosition) < threshold) {
+                    newSection = index;
+                }
+            });
 
-            if (activeSection !== currentSection) {
-                setCurrentSection(activeSection);
-                onSectionChange?.(activeSection);
+            if (newSection !== currentSection) {
+                setCurrentSection(newSection);
+                onSectionChange?.(newSection);
             }
         }
     );
 
-    // Navigate to specific section programmatically
+    // Scroll to specific section
     const scrollToSection = (index: number) => {
-        const targetSection = sectionElements[index];
+        if (!containerRef.current || !sectionElements[index]) return;
+
+        const target = sectionElements[index];
         const container = containerRef.current;
 
-        if (targetSection && container) {
-            if (direction === 'horizontal') {
-                container.scrollTo({
-                    left: targetSection.offsetLeft,
-                    behavior: 'smooth'
-                });
-            } else {
-                container.scrollTo({
-                    top: targetSection.offsetTop,
-                    behavior: 'smooth'
-                });
-            }
+        if (direction === 'horizontal') {
+            const scrollLeft = target.offsetLeft;
+            container.scrollTo({
+                left: scrollLeft,
+                behavior: 'smooth'
+            });
+        } else {
+            const scrollTop = target.offsetTop;
+            container.scrollTo({
+                top: scrollTop,
+                behavior: 'smooth'
+            });
         }
     };
 
     // Generate scroll snap classes
     const getScrollSnapClasses = () => {
-        if (!enableScrollSnap) return direction === 'horizontal' ? 'flex overflow-x-auto' : 'overflow-y-auto';
+        if (!enableScrollSnap) return direction === 'horizontal' ?
+            'flex overflow-x-auto' : 'overflow-y-auto';
 
         if (direction === 'horizontal') {
             return `scroll-snap-type-x-${snapType} overflow-x-auto overflow-y-hidden flex`;
@@ -137,23 +138,84 @@ export const SectionWrapper: React.FC<SectionWrapperConfig> = ({
         }
     };
 
-    // Navigation position classes
+    // Responsive navigation configuration
+    const getNavigationConfig = () => {
+        // Dot size based on device
+        const dotSize = getBreakpointValue(breakpoint, {
+            'small-phone': 'w-5 h-5', // Bigger for tiny screens
+            'normal-phone': 'w-4 h-4',
+            'tablet': 'w-4 h-4',
+            'desktop': 'w-3 h-3',
+            'large-desktop': 'w-3 h-3',
+        }, 'w-3 h-3');
+
+        // Touch target padding (invisible but tappable area)
+        const touchPadding = isMobile ? 'p-3' : 'p-1';
+
+        // Gap between navigation dots
+        const navGap = getBreakpointValue(breakpoint, {
+            'small-phone': 'gap-3',
+            'normal-phone': 'gap-2',
+            'tablet': 'gap-2',
+            'desktop': 'gap-2',
+            'large-desktop': 'gap-2',
+        }, 'gap-2');
+
+        // Container padding from screen edges
+        const containerPadding = getBreakpointValue(breakpoint, {
+            'small-phone': '4',
+            'normal-phone': '6',
+            'tablet': '6',
+            'desktop': '6',
+            'large-desktop': '6',
+        }, '6');
+
+        return {
+            dotSize,
+            touchPadding,
+            navGap,
+            containerPadding,
+        };
+    };
+
+    // Navigation position classes with responsive spacing
     const getNavigationClasses = () => {
+        const { containerPadding, navGap } = getNavigationConfig();
+
         if (direction === 'horizontal') {
             const positionMap = {
-                start: 'bottom-6 left-6',
-                center: 'bottom-6 left-1/2 transform -translate-x-1/2',
-                end: 'bottom-6 right-6'
+                start: `bottom-${containerPadding} left-${containerPadding}`,
+                center: `bottom-${containerPadding} left-1/2 transform -translate-x-1/2`,
+                end: `bottom-${containerPadding} right-${containerPadding}`
             };
-            return `fixed z-50 flex gap-2 ${positionMap[navigationPosition]}`;
+            return `fixed z-50 flex ${navGap} ${positionMap[navigationPosition]}`;
         } else {
             const positionMap = {
-                start: 'fixed top-6 right-6',
-                center: 'fixed top-1/2 right-6 transform -translate-y-1/2',
-                end: 'fixed bottom-6 right-6'
+                start: `top-${containerPadding} right-${containerPadding}`,
+                center: `top-1/2 right-${containerPadding} transform -translate-y-1/2`,
+                end: `bottom-${containerPadding} right-${containerPadding}`
             };
-            return `${positionMap[navigationPosition]} z-50 flex ${direction === 'vertical' ? 'flex-col' : ''} gap-2`;
+            return `fixed ${positionMap[navigationPosition]} z-50 flex ${direction === 'vertical' ? 'flex-col' : ''} ${navGap}`;
         }
+    };
+
+    // Responsive navigation dot styles
+    const getNavigationDotClasses = (index: number) => {
+        const { dotSize, touchPadding } = getNavigationConfig();
+        const isActive = currentSection === index;
+
+        // Enhanced color scheme for better visibility
+        const activeColor = 'bg-blue-600';
+        const inactiveColor = 'bg-gray-400';
+
+        // Enhanced mobile interaction states
+        const hoverScale = isMobile ? '1.1' : '1.2';
+
+        return `
+            ${dotSize} ${touchPadding} rounded-full transition-all duration-300 border-none cursor-pointer
+            ${isActive ? `${activeColor} opacity-100 scale-110` : `${inactiveColor} opacity-40 scale-100`}
+            ${isTouch ? 'active:scale-95' : ''} /* Touch feedback for mobile */
+        `;
     };
 
     return (
@@ -162,10 +224,10 @@ export const SectionWrapper: React.FC<SectionWrapperConfig> = ({
             <motion.div
                 ref={containerRef}
                 className={`
-          w-full h-full
-          ${getScrollSnapClasses()}
-          scroll-smooth
-        `}
+                    w-full h-full
+                    ${getScrollSnapClasses()}
+                    scroll-smooth
+                `}
                 style={{
                     gap: gap ? `${gap}px` : undefined,
                     scrollSnapType: enableScrollSnap
@@ -180,9 +242,9 @@ export const SectionWrapper: React.FC<SectionWrapperConfig> = ({
                     <div
                         key={index}
                         className={`z-[1]
-              ${enableScrollSnap ? 'scroll-snap-start' : ''} flex-shrink-0
-              ${direction === 'horizontal' ? 'w-full h-full' : 'min-h-screen w-full'}
-            `}
+                            ${enableScrollSnap ? 'scroll-snap-start' : ''} flex-shrink-0
+                            ${direction === 'horizontal' ? 'w-full h-full' : 'min-h-screen w-full'}
+                        `}
                     >
                         {child}
                     </div>
@@ -196,26 +258,31 @@ export const SectionWrapper: React.FC<SectionWrapperConfig> = ({
                 </UIGridOverlay>
             )}
 
-            {/* Navigation dots */}
+            {/* Responsive Navigation dots */}
             {showNavigation && sections.length > 0 && (
                 <div className={getNavigationClasses()}>
                     {sections.map((_, index) => (
                         <motion.button
                             key={index}
                             onClick={() => scrollToSection(index)}
-                            className={`
-                    w-3 h-3 rounded-full transition-all duration-300 border-none cursor-pointer
-                    ${currentSection === index
-                                    ? 'bg-blue-600 opacity-100 scale-110'
-                                    : 'bg-gray-400 opacity-40 scale-100'
-                                }
-                `}
+                            className={getNavigationDotClasses(index)}
                             whileHover={{
-                                scale: 1.2,
+                                scale: isMobile ? 1.1 : 1.2,
                                 opacity: 0.8
                             }}
-                            whileTap={{ scale: 0.9 }}
+                            whileTap={{
+                                scale: 0.9,
+                                transition: { duration: 0.1 } // Quick feedback for better UX
+                            }}
                             aria-label={`Go to section ${index + 1}`}
+                            // Enhanced accessibility for touch devices
+                            role="tab"
+                            tabIndex={0}
+                            style={{
+                                // Ensure minimum touch target size (44px minimum per Apple/Google guidelines)
+                                minWidth: isMobile ? '44px' : 'auto',
+                                minHeight: isMobile ? '44px' : 'auto',
+                            }}
                         />
                     ))}
                 </div>
