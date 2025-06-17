@@ -7,12 +7,16 @@ import { useUIStore } from '@/app/store';
 import { useThemeStore } from '@/app/store';
 import { useLanguageStore } from '@/app/store';
 import { useEffect } from 'react';
+import { ScrollReveal } from './components/animations/ScrollReveal';
+import { useHydration } from '@/app/hooks/useHydration';
 
 export default function Home() {
   // Store hooks
   const { ui, openModal, closeModal, showToast, toggleMenu, resetUI } = useUIStore();
   const { currentTheme, availableThemes, setTheme, updateTheme, loadGoogleFont } = useThemeStore();
   const { currentLanguage, setLanguage, t } = useLanguageStore();
+
+  const isHydrated = useHydration(); // Prevents hydration issues with language store
 
   // Apply theme to document
   useEffect(() => {
@@ -53,8 +57,16 @@ export default function Home() {
         padding="px-6 py-20"
         textAlignment="center"
       >
-        <h1 className="text-6xl font-bold mb-6">{t('hero.title', 'Store Integration Demo')}</h1>
-        <p className="text-xl opacity-90">{t('hero.subtitle', 'Check out all the interactive store features!')}</p>
+        <ScrollReveal
+          animation="fade"
+          direction="up-down"
+          duration={0.8}
+          ease={[0.87, 0, 0.13, 1]}
+          delay={0}
+        >
+          <h1 className="text-6xl font-bold mb-6">{t('hero.title', 'Welcome')}</h1>
+        </ScrollReveal>
+        <p className="text-xl opacity-90">{t('hero.subtitle', 'Build something amazing')}</p>
 
         <div className="mt-8 space-x-4 relative z-10">
           <button
@@ -130,12 +142,19 @@ export default function Home() {
         <p className="text-lg opacity-90 mb-8">Try out all the store interactions!</p>
 
         <div className="space-y-4 relative z-10">
-          <button
-            onClick={resetUI}
-            className="bg-red-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-600 transition-all relative z-10"
+          <ScrollReveal
+            animation="mask"
+            direction="center"
+            duration={0.8}
+            ease={[0.87, 0, 0.13, 1]}
           >
-            Reset All UI State
-          </button>
+            <button
+              onClick={resetUI}
+              className="bg-red-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-600 transition-all relative z-10"
+            >
+              Reset All UI State
+            </button>
+          </ScrollReveal>
         </div>
       </Section>
 

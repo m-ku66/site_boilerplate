@@ -63,7 +63,7 @@ export const UIGridOverlay: React.FC<UIGridOverlayProps> = ({
     return (
         <div
             className={`
-        fixed inset-0 pointer-events-none
+        fixed inset-0 pointer-events-none z-[100]
         ${mobileBreakpoint === 'sm' ? 'sm:block' : ''}
         ${mobileBreakpoint === 'md' ? 'md:block' : ''}
         ${mobileBreakpoint === 'lg' ? 'lg:block' : ''}

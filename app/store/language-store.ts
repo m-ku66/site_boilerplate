@@ -6,11 +6,18 @@ import {
   SupportedLanguage,
 } from "@/app/types";
 
-export const useLanguageStore = create<LanguageStore>()(
+// First, let's extend the LanguageStore interface
+interface ExtendedLanguageStore extends LanguageStore {
+  isHydrated: boolean;
+  setHydrated: (hydrated: boolean) => void;
+}
+
+export const useLanguageStore = create<ExtendedLanguageStore>()(
   persist(
     (set, get) => ({
       currentLanguage: "en",
       availableLanguages: AVAILABLE_LANGUAGES,
+      isHydrated: false, // Add hydration tracking
       translations: {
         en: {
           home: "Home",
@@ -49,9 +56,16 @@ export const useLanguageStore = create<LanguageStore>()(
       },
 
       setLanguage: (language) => set({ currentLanguage: language }),
+      setHydrated: (hydrated) => set({ isHydrated: hydrated }),
 
       t: (key, fallback) => {
         const state = get();
+
+        // IMPORTANT: If not hydrated yet, always return fallback or default English
+        if (!state.isHydrated) {
+          return fallback || key;
+        }
+
         const keys = key.split(".");
         let value: any = state.translations[state.currentLanguage];
 
@@ -63,7 +77,6 @@ export const useLanguageStore = create<LanguageStore>()(
       },
 
       loadTranslations: async (language) => {
-        // For future dynamic loading if needed
         try {
           const response = await fetch(`/api/translations/${language}`);
           const translations = await response.json();
