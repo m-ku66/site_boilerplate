@@ -9,6 +9,7 @@ import { useLanguageStore } from '@/app/store';
 import { useEffect } from 'react';
 import { ScrollReveal } from './components/animations/ScrollReveal';
 import { useHydration } from '@/app/hooks/useHydration';
+import { FontCyclingTest } from './components/FontCyclingTest';
 
 export default function Home() {
   // Store hooks
@@ -46,7 +47,8 @@ export default function Home() {
       className="h-screen"
       style={{
         backgroundColor: currentTheme.backgroundColor,
-        color: currentTheme.foregroundColor
+        color: currentTheme.foregroundColor,
+        fontFamily: currentTheme.typeFace,
       }}
     >
       {/* Hero Section */}
@@ -138,7 +140,7 @@ export default function Home() {
         padding="px-6 py-20"
         textAlignment="center"
       >
-        <h2 className="text-4xl font-bold mb-6">{t('contact', 'Interactive Demo')}</h2>
+        <h2 className="text-4xl font-bold mb-6">{t('contact', 'Contact')}</h2>
         <p className="text-lg opacity-90 mb-8">Try out all the store interactions!</p>
 
         <div className="space-y-4 relative z-10">
@@ -272,6 +274,10 @@ export default function Home() {
           </div>
         </UIElement>
       )}
+
+      <UIElement layer="overlay" zone="bottom-right" className="p-6 pointer-events-auto">
+        <FontCyclingTest />
+      </UIElement>
     </SectionWrapper>
   );
 }
