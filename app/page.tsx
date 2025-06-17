@@ -4,28 +4,15 @@ import { SectionWrapper } from '@/app/components/layout/SectionWrapper';
 import { Section } from '@/app/components/layout/Section';
 import { useThemeStore } from '@/app/store';
 import { useLanguageStore } from '@/app/store';
-import { useEffect } from 'react';
-import { useHydration } from '@/app/hooks/useHydration';
 import { TestModeToggle } from './tests/TestModeToggle';
 import { UIElement } from './components';
 
 export default function Home() {
-  // Essential store hooks for theme and language support
+  // Only get what you actually need - no boilerplate!
   const { currentTheme } = useThemeStore();
   const { t } = useLanguageStore();
 
-  // Initialize hydration for all stores
-  const isHydrated = useHydration();
-
-  // Apply theme to document via CSS custom properties
-  useEffect(() => {
-    document.documentElement.style.setProperty('--primary-color', currentTheme.primaryColor);
-    document.documentElement.style.setProperty('--secondary-color', currentTheme.secondaryColor);
-    document.documentElement.style.setProperty('--accent-color', currentTheme.accentColor);
-    document.documentElement.style.setProperty('--background-color', currentTheme.backgroundColor);
-    document.documentElement.style.setProperty('--foreground-color', currentTheme.foregroundColor);
-    document.documentElement.style.setProperty('--font-family', `"${currentTheme.typeFace}", sans-serif`);
-  }, [currentTheme]);
+  // No useEffect needed! No CSS custom property setup! ThemeProvider handles it all!
 
   return (
     <SectionWrapper
@@ -35,6 +22,7 @@ export default function Home() {
       showNavigation={false}
       debug={false}
       className="h-screen"
+      // These styles still work for component-specific overrides
       style={{
         backgroundColor: currentTheme.backgroundColor,
         color: currentTheme.foregroundColor,
@@ -68,54 +56,56 @@ export default function Home() {
         </div>
       </Section>
 
-      {/* Content Section - Ready for your content */}
+      {/* Content Section - Uses CSS custom properties automatically! */}
       <Section
         id="content"
         className="bg-white"
         minHeight="100vh"
         padding="px-6 py-20"
         textAlignment="center"
-        style={{ backgroundColor: currentTheme.backgroundColor }}
+      // No inline styles needed! CSS custom properties work automatically
       >
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-4xl font-bold mb-6" style={{ color: currentTheme.primaryColor }}>
+          {/* These will automatically use theme colors via CSS custom properties */}
+          <h2 className="text-4xl font-bold mb-6" style={{ color: 'var(--primary-color)' }}>
             {t('content.title', 'Your Content Here')}
           </h2>
-          <p className="text-lg mb-8" style={{ color: currentTheme.secondaryColor }}>
+          <p className="text-lg mb-8" style={{ color: 'var(--secondary-color)' }}>
             {t('content.subtitle', 'This is your clean starting point. Theme and language stores are ready to go!')}
           </p>
 
-          {/* Add your content here */}
+          {/* Grid uses automatic theming */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="p-6 rounded-lg border" style={{ borderColor: currentTheme.accentColor }}>
-              <h3 className="text-xl font-semibold mb-3" style={{ color: currentTheme.primaryColor }}>
+            <div className="p-6 rounded-lg border" style={{ borderColor: 'var(--accent-color)' }}>
+              <h3 className="text-xl font-semibold mb-3" style={{ color: 'var(--primary-color)' }}>
                 Feature One
               </h3>
-              <p className="text-sm" style={{ color: currentTheme.secondaryColor }}>
+              <p className="text-sm" style={{ color: 'var(--secondary-color)' }}>
                 Your feature description here
               </p>
             </div>
 
-            <div className="p-6 rounded-lg border" style={{ borderColor: currentTheme.accentColor }}>
-              <h3 className="text-xl font-semibold mb-3" style={{ color: currentTheme.primaryColor }}>
+            <div className="p-6 rounded-lg border" style={{ borderColor: 'var(--accent-color)' }}>
+              <h3 className="text-xl font-semibold mb-3" style={{ color: 'var(--primary-color)' }}>
                 Feature Two
               </h3>
-              <p className="text-sm" style={{ color: currentTheme.secondaryColor }}>
+              <p className="text-sm" style={{ color: 'var(--secondary-color)' }}>
                 Your feature description here
               </p>
             </div>
 
-            <div className="p-6 rounded-lg border" style={{ borderColor: currentTheme.accentColor }}>
-              <h3 className="text-xl font-semibold mb-3" style={{ color: currentTheme.primaryColor }}>
+            <div className="p-6 rounded-lg border" style={{ borderColor: 'var(--accent-color)' }}>
+              <h3 className="text-xl font-semibold mb-3" style={{ color: 'var(--primary-color)' }}>
                 Feature Three
               </h3>
-              <p className="text-sm" style={{ color: currentTheme.secondaryColor }}>
+              <p className="text-sm" style={{ color: 'var(--secondary-color)' }}>
                 Your feature description here
               </p>
             </div>
           </div>
         </div>
       </Section>
+
       <UIElement layer='overlay' zone='top-right' className="p-4 pointer-events-auto hover:scale-110 transition-transform duration-150">
         <TestModeToggle />
       </UIElement>
