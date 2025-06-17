@@ -1,22 +1,22 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { usePageTransition } from '@/app/components/providers/PageTransitionProvider';
 
 /**
- * Optional toggle component for easy switching between main app and test mode
- * Add this to any page for quick access to testing functionality
+ * Updated TestModeToggle that uses our smooth page transitions
+ * Now navigation between test and main app will have beautiful animations!
  */
 export const TestModeToggle = () => {
-    const router = useRouter();
+    const { transitionTo, isTransitioning } = usePageTransition();
     const [isVisible, setIsVisible] = useState(false);
 
     const navigateToTest = () => {
-        router.push('/tests');
+        transitionTo('/tests');
     };
 
     const navigateToHome = () => {
-        router.push('/');
+        transitionTo('/');
     };
 
     return (
@@ -26,6 +26,7 @@ export const TestModeToggle = () => {
                 onClick={() => setIsVisible(!isVisible)}
                 className="fixed top-4 right-4 z-50 bg-gray-800 text-white p-2 rounded-full shadow-lg hover:bg-gray-700 transition-all"
                 title="Toggle test mode"
+                disabled={isTransitioning}
             >
                 🧪
             </button>
@@ -37,19 +38,30 @@ export const TestModeToggle = () => {
                     <div className="space-y-2">
                         <button
                             onClick={navigateToHome}
-                            className="block w-full text-left px-3 py-2 rounded text-sm hover:bg-gray-100 transition-all"
+                            className={`block w-full text-left px-3 py-2 rounded text-sm transition-all ${isTransitioning
+                                ? 'opacity-50 cursor-not-allowed'
+                                : 'hover:bg-gray-100'
+                                }`}
+                            disabled={isTransitioning}
                         >
                             🏠 Main App
                         </button>
                         <button
                             onClick={navigateToTest}
-                            className="block w-full text-left px-3 py-2 rounded text-sm hover:bg-gray-100 transition-all"
+                            className={`block w-full text-left px-3 py-2 rounded text-sm transition-all ${isTransitioning
+                                ? 'opacity-50 cursor-not-allowed'
+                                : 'hover:bg-gray-100'
+                                }`}
+                            disabled={isTransitioning}
                         >
                             🧪 Store Testing
                         </button>
                     </div>
                     <p className="text-xs text-gray-500 mt-3">
-                        Switch between production and testing views
+                        {isTransitioning
+                            ? 'Transitioning...'
+                            : 'Switch between production and testing views'
+                        }
                     </p>
                 </div>
             )}

@@ -12,8 +12,6 @@ export default function Home() {
   const { currentTheme } = useThemeStore();
   const { t } = useLanguageStore();
 
-  // No useEffect needed! No CSS custom property setup! ThemeProvider handles it all!
-
   return (
     <SectionWrapper
       enableScrollSnap={true}
