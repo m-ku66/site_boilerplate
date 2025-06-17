@@ -49,13 +49,45 @@ export const Section: React.FC<SectionProps> = ({
         return widthMap[maxWidth] || maxWidth;
     };
 
-    // Build styles object for backgrounds
+    // Handle minHeight - support both Tailwind classes and custom values
+    const getMinHeightStyles = () => {
+        if (!minHeight) return {};
+
+        // If it's a standard Tailwind class, let CSS handle it
+        const tailwindClasses = ['min-h-screen', 'min-h-full', 'min-h-0', 'min-h-max', 'min-h-min', 'min-h-fit'];
+        if (tailwindClasses.includes(minHeight)) {
+            return {};
+        }
+
+        // If it contains vh, vw, px, rem, etc., apply as inline style
+        if (minHeight.includes('vh') || minHeight.includes('vw') || minHeight.includes('px') || minHeight.includes('rem') || minHeight.includes('%')) {
+            return { minHeight };
+        }
+
+        return {};
+    };
+
+    const getMinHeightClass = () => {
+        if (!minHeight) return 'min-h-screen'; // default fallback
+
+        // If it's a standard Tailwind class, use it
+        const tailwindClasses = ['min-h-screen', 'min-h-full', 'min-h-0', 'min-h-max', 'min-h-min', 'min-h-fit'];
+        if (tailwindClasses.includes(minHeight)) {
+            return minHeight;
+        }
+
+        // For custom values, we'll use inline styles instead
+        return '';
+    };
+
+    // Build styles object for backgrounds and minHeight
     const sectionStyles: React.CSSProperties = {
         backgroundColor: backgroundColor || undefined,
         backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
         backgroundSize: backgroundImage ? 'cover' : undefined,
         backgroundPosition: backgroundImage ? 'center' : undefined,
         backgroundRepeat: backgroundImage ? 'no-repeat' : undefined,
+        ...getMinHeightStyles(), // Add minHeight styles
     };
 
     return (
@@ -63,7 +95,7 @@ export const Section: React.FC<SectionProps> = ({
             id={id}
             className={`
         relative w-full flex flex-col
-        ${minHeight}
+        ${getMinHeightClass()}
         ${padding}
         ${getAlignmentClasses()}
         ${className}

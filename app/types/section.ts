@@ -8,6 +8,7 @@ export interface SectionProps extends BaseComponentProps {
   backgroundColor?: string;
   backgroundImage?: string;
   textAlignment?: AlignmentOption;
+  style?: React.CSSProperties;
 }
 
 export interface SectionWrapperProps extends BaseComponentProps {
@@ -15,6 +16,7 @@ export interface SectionWrapperProps extends BaseComponentProps {
   snapDuration?: number;
   direction?: "vertical" | "horizontal";
   snapType?: "mandatory" | "proximity";
+  style?: React.CSSProperties;
 }
 
 // Template-specific section types
