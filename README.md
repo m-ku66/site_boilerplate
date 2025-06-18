@@ -219,7 +219,7 @@ const { isMobile } = useViewport();
 let someValue = isMobile ? "Mobile value" : "Desktop value";
 ```
 
-You can see a full list of the booleans this hook returns in the actual hook file. I mainly designed this because there were several times when I made something that I thought was responsive, only to find out that it breaks on old android phone or a 1920 x 1080 pixel display or something. The hook should hopefully help catching mistakes like that.
+You can see a full list of the booleans this hook returns in the actual hook file. I mainly designed this because there were several times when I made something that I thought was responsive, only to find out that it breaks on old android phones or a 1920 x 1080 pixel displays or something. The hook should hopefully help catching mistakes like that.
 
 ### Theming
 
