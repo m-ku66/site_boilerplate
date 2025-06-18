@@ -8,7 +8,8 @@ This boilerplate provides some basic features that I usually include in my web d
 - Responsive design assistance
 - Theming set up
 
-## Each of these features can be expanded upon to meet the specific needs of any given project. I'll explain some of these features in depth next.
+Each of these features can be expanded upon to meet the specific needs of any given project. I'll explain some of these features in depth next.
+---
 
 ### Scroll Snapping
 
