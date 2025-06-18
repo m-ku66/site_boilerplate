@@ -6,7 +6,7 @@ import {
   SupportedLanguage,
 } from "@/app/types";
 
-// First, let's extend the LanguageStore interface
+// First, extend the LanguageStore interface
 interface ExtendedLanguageStore extends LanguageStore {
   isHydrated: boolean;
   setHydrated: (hydrated: boolean) => void;
