@@ -24,7 +24,7 @@ export const TestModeToggle = () => {
             {/* Toggle Button */}
             <button
                 onClick={() => setIsVisible(!isVisible)}
-                className="fixed top-4 right-4 z-50 bg-gray-800 text-white p-2 rounded-full shadow-lg hover:bg-gray-700 transition-all"
+                className="fixed z-50 bg-gray-800 text-white p-2 rounded-full shadow-lg hover:bg-gray-700 transition-all"
                 title="Toggle test mode"
                 disabled={isTransitioning}
             >
@@ -33,7 +33,7 @@ export const TestModeToggle = () => {
 
             {/* Navigation Panel */}
             {isVisible && (
-                <div className="fixed top-16 right-4 z-50 bg-white shadow-lg rounded-lg p-4 border">
+                <div className="fixed z-50 bg-white shadow-lg rounded-lg p-4 border">
                     <h3 className="font-semibold mb-3 text-gray-800">Test Mode</h3>
                     <div className="space-y-2">
                         <button

@@ -181,43 +181,87 @@ export const SectionWrapper: React.FC<SectionWrapperConfig> = ({
     };
 
     // Navigation position classes with responsive spacing
-    const getNavigationClasses = () => {
+    const getNavigationStyles = () => {
         const { containerPadding, navGap } = getNavigationConfig();
 
+        // Convert containerPadding to pixels (multiply by 4 for Tailwind spacing)
+        const padding = parseInt(containerPadding!) * 4;
+
         if (direction === 'horizontal') {
-            const positionMap = {
-                start: `bottom-${containerPadding} left-${containerPadding}`,
-                center: `bottom-${containerPadding} left-1/2 transform -translate-x-1/2`,
-                end: `bottom-${containerPadding} right-${containerPadding}`
+            const positionStyles = {
+                start: {
+                    bottom: `${padding}px`,
+                    left: `${padding}px`,
+                },
+                center: {
+                    bottom: `${padding}px`,
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                },
+                end: {
+                    bottom: `${padding}px`,
+                    right: `${padding}px`,
+                }
             };
-            return `fixed z-50 flex ${navGap} ${positionMap[navigationPosition]}`;
+
+            return {
+                position: 'fixed' as const,
+                zIndex: 200,
+                display: 'flex',
+                gap: `${parseInt(navGap!.replace('gap-', '')) * 4}px`, // Convert gap-2 to 8px
+                ...positionStyles[navigationPosition]
+            };
         } else {
-            const positionMap = {
-                start: `top-${containerPadding} right-${containerPadding}`,
-                center: `top-1/2 right-${containerPadding} transform -translate-y-1/2`,
-                end: `bottom-${containerPadding} right-${containerPadding}`
+            const positionStyles = {
+                start: {
+                    top: `${padding}px`,
+                    right: `${padding}px`,
+                },
+                center: {
+                    top: '50%',
+                    right: `${padding}px`,
+                    transform: 'translateY(-50%)',
+                },
+                end: {
+                    bottom: `${padding}px`,
+                    right: `${padding}px`,
+                }
             };
-            return `fixed ${positionMap[navigationPosition]} z-50 flex ${direction === 'vertical' ? 'flex-col' : ''} ${navGap}`;
+
+            return {
+                position: 'fixed' as const,
+                zIndex: 200,
+                display: 'flex',
+                flexDirection: direction === 'vertical' ? 'column' as const : 'row' as const,
+                gap: `${parseInt(navGap!.replace('gap-', '')) * 4}px`, // Convert gap-2 to 8px
+                ...positionStyles[navigationPosition]
+            };
         }
     };
 
-    // Responsive navigation dot styles
-    const getNavigationDotClasses = (index: number) => {
+    // Navigation dot styles
+    const getNavigationDotStyles = (index: number) => {
         const { dotSize, touchPadding } = getNavigationConfig();
         const isActive = currentSection === index;
 
-        // Enhanced color scheme for better visibility
-        const activeColor = `bg-[${currentTheme.primaryColor}]`;
-        const inactiveColor = `bg-[${currentTheme.secondaryColor}]`;
+        // Convert Tailwind classes to pixel values
+        const size = parseInt(dotSize!.split(' ')[0].replace('w-', '')) * 4; // w-3 = 12px
+        const padding = parseInt(touchPadding.replace('p-', '')) * 4; // p-1 = 4px
 
-        // Enhanced mobile interaction states
-        const hoverScale = isMobile ? '1.1' : '1.2';
-
-        return `
-            ${dotSize} ${touchPadding} rounded-full transition-all duration-300 border-none cursor-pointer
-            ${isActive ? `${activeColor} opacity-100 scale-110` : `${inactiveColor} opacity-40 scale-100`}
-            ${isTouch ? 'active:scale-95' : ''} /* Touch feedback for mobile */
-        `;
+        return {
+            width: `${size}px`,
+            height: `${size}px`,
+            padding: `${padding}px`,
+            borderRadius: '50%',
+            border: 'none',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            backgroundColor: isActive ? currentTheme.primaryColor : currentTheme.secondaryColor,
+            opacity: isActive ? 1 : 0.4,
+            transform: isActive ? 'scale(1.1)' : 'scale(1)',
+            minWidth: isMobile ? '44px' : 'auto',
+            minHeight: isMobile ? '44px' : 'auto',
+        };
     };
 
     return (
@@ -262,29 +306,23 @@ export const SectionWrapper: React.FC<SectionWrapperConfig> = ({
 
             {/* Responsive Navigation dots */}
             {showNavigation && sections.length > 0 && (
-                <div className={getNavigationClasses()}>
+                <div style={getNavigationStyles()}>
                     {sections.map((_, index) => (
                         <motion.button
                             key={index}
                             onClick={() => scrollToSection(index)}
-                            className={getNavigationDotClasses(index)}
+                            style={getNavigationDotStyles(index)}
                             whileHover={{
                                 scale: isMobile ? 1.1 : 1.2,
                                 opacity: 0.8
                             }}
                             whileTap={{
                                 scale: 0.9,
-                                transition: { duration: 0.1 } // Quick feedback for better UX
+                                transition: { duration: 0.1 }
                             }}
                             aria-label={`Go to section ${index + 1}`}
-                            // Enhanced accessibility for touch devices
                             role="tab"
                             tabIndex={0}
-                            style={{
-                                // Ensure minimum touch target size (44px minimum per Apple/Google guidelines)
-                                minWidth: isMobile ? '44px' : 'auto',
-                                minHeight: isMobile ? '44px' : 'auto',
-                            }}
                         />
                     ))}
                 </div>
