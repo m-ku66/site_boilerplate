@@ -116,7 +116,7 @@ export interface LanguageStore {
   availableLanguages: LanguageOption[];
   translations: Record<SupportedLanguage, TranslationKeys>;
   setLanguage: (language: SupportedLanguage) => void;
-  t: (key: string, fallback?: string) => string; // If translations can;t be loaded, use a fallback
+  t: (key: string, fallback?: string) => string; // If translations can't be loaded, use a fallback
   loadTranslations: (language: SupportedLanguage) => Promise<void>;
 }
 
@@ -184,7 +184,7 @@ export const useLanguageStore = create<ExtendedLanguageStore>()(
       //...rest of store
 ```
 
-How this system works is by switching between pre-defined translations that you or your transaltors set up. You define the structure of your site's text in the `TranslationKeys` interface, and then set up the language codes, names, native names, and flags, in the `AVAILABLE_LANGUAGES` constant. When you set up the structure for your site's text, _you mirror that structure in the language store with the actual string values_. The structure that's in this boilerplate is pretty basic, but you could make a structure that makes more sense like this:
+How this system works is by switching between pre-defined translations that you or your translators set up. You define the structure of your site's text in the `TranslationKeys` interface, and then set up the language codes, names, native names, and flags, in the `AVAILABLE_LANGUAGES` constant. When you set up the structure for your site's text, _you mirror that structure in the language store with the actual string values_. The structure that's in this boilerplate is pretty basic, but you could make a structure that makes more sense like this:
 
 ```ts
 export interface TranslationKeys {
