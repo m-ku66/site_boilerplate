@@ -23,7 +23,7 @@ export const DEFAULT_THEMES: Record<string, ThemeData> = {
     name: "light",
     typeFace: "Inter",
     primaryColor: "#000000",
-    secondaryColor: "#666666",
+    secondaryColor: "#D3D3D3",
     accentColor: "#0066cc",
     backgroundColor: "#ffffff",
     foregroundColor: "#000000",

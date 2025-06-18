@@ -6,6 +6,7 @@ import { SectionWrapperProps } from '@/app/types';
 import { UIGridOverlay } from '@/app/components/ui/UIGridOverlay';
 import { UIElement } from '@/app/components/ui/UIElement';
 import { useViewport, getBreakpointValue } from '@/app/hooks/useViewport';
+import { useThemeStore } from '@/app/store';
 
 interface SectionWrapperConfig extends SectionWrapperProps {
     showNavigation?: boolean;
@@ -35,6 +36,7 @@ export const SectionWrapper: React.FC<SectionWrapperConfig> = ({
     const containerRef = useRef<HTMLDivElement>(null);
     const [sectionElements, setSectionElements] = useState<HTMLElement[]>([]);
     const [currentSection, setCurrentSection] = useState(0);
+    const { currentTheme } = useThemeStore();
 
     // Framer Motion scroll tracking
     const { scrollX, scrollY } = useScroll({
@@ -205,8 +207,8 @@ export const SectionWrapper: React.FC<SectionWrapperConfig> = ({
         const isActive = currentSection === index;
 
         // Enhanced color scheme for better visibility
-        const activeColor = 'bg-blue-600';
-        const inactiveColor = 'bg-gray-400';
+        const activeColor = `bg-[${currentTheme.primaryColor}]`;
+        const inactiveColor = `bg-[${currentTheme.secondaryColor}]`;
 
         // Enhanced mobile interaction states
         const hoverScale = isMobile ? '1.1' : '1.2';
