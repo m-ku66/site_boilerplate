@@ -82,30 +82,39 @@ export const SectionWrapper: React.FC<SectionWrapperConfig> = ({
         (latest) => {
             if (sectionElements.length === 0) return;
 
+            // Find the section closest to the center of the viewport
             let newSection = 0;
-            const scrollPosition = latest;
-            const threshold = direction === 'horizontal'
+            let minDistance = Infinity;
+
+            const viewportCenter = direction === 'horizontal'
                 ? window.innerWidth / 2
                 : window.innerHeight / 2;
 
             sectionElements.forEach((element, index) => {
                 const rect = element.getBoundingClientRect();
-                const elementPosition = direction === 'horizontal'
-                    ? rect.left
-                    : rect.top;
 
-                if (Math.abs(elementPosition) < threshold) {
+                // Calculate the center of this section relative to viewport
+                const elementCenter = direction === 'horizontal'
+                    ? rect.left + rect.width / 2
+                    : rect.top + rect.height / 2;
+
+                // Calculate distance from viewport center to element center
+                const distance = Math.abs(viewportCenter - elementCenter);
+
+                // Keep track of the closest section
+                if (distance < minDistance) {
+                    minDistance = distance;
                     newSection = index;
                 }
             });
 
+            // Only update if the section actually changed
             if (newSection !== currentSection) {
                 setCurrentSection(newSection);
                 onSectionChange?.(newSection);
             }
         }
     );
-
     // Scroll to specific section
     const scrollToSection = (index: number) => {
         if (!containerRef.current || !sectionElements[index]) return;

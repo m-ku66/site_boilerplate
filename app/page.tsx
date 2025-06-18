@@ -65,7 +65,7 @@ export default function ShowcaseHomepage() {
         id="hero"
         className="relative overflow-hidden"
         minHeight="100vh"
-        padding="px-6 py-20"
+        padding="px-6 py-10"
         textAlignment="center"
         style={{ backgroundColor: currentTheme.backgroundColor, color: currentTheme.foregroundColor }}
       >
@@ -76,7 +76,7 @@ export default function ShowcaseHomepage() {
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.8, ease: [0.87, 0, 0.13, 1] }}
             >
-              <h1 className="text-7xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+              <h1 className="text-7xl p-4 font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                 Next.js Boilerplate
               </h1>
               <p className="text-2xl mb-12 max-w-3xl mx-auto">
@@ -162,7 +162,7 @@ export default function ShowcaseHomepage() {
       <Section
         id="themes"
         minHeight="100vh"
-        padding="px-6 py-20"
+        padding="px-6 py-10"
         textAlignment="center"
         style={{ backgroundColor: currentTheme.backgroundColor }}
       >
@@ -232,7 +232,7 @@ currentTheme.typeFace`}
       <Section
         id="animations"
         minHeight="100vh"
-        padding="px-6 py-20"
+        padding="px-6 pt-10 pb-20"
         textAlignment="center"
         style={{
           backgroundColor: currentTheme.backgroundColor,
@@ -341,7 +341,7 @@ currentTheme.typeFace`}
       <Section
         id="features"
         minHeight="100vh"
-        padding="px-6 py-20"
+        padding="px-6 py-10"
         textAlignment="center"
         style={{ backgroundColor: currentTheme.backgroundColor }}
       >
