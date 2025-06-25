@@ -377,7 +377,7 @@ The provider reads from the `transitionVariants.ts` file to determine what anima
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License
 
 ## 🤝 Contributing
 
