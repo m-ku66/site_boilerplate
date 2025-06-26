@@ -19,7 +19,7 @@ import { TestModeToggle } from './TestModeToggle';
  */
 export const StoreTestingDemo = () => {
     // Store hooks
-    const { ui, openModal, closeModal, showToast, toggleMenu, resetUI } = useUIStore();
+    const { ui, openModal, closeModal, showToast, toggleMenu, resetUI, closeMenu, hideToast } = useUIStore();
     const { currentTheme, availableThemes, setTheme } = useThemeStore();
     const { currentLanguage, setLanguage, t } = useLanguageStore();
 
@@ -31,6 +31,12 @@ export const StoreTestingDemo = () => {
         console.log(`Now viewing: ${sectionNames[index]} section`);
         showToast(`Now viewing: ${sectionNames[index]} section`, 'info');
     };
+
+    useEffect(() => {
+        setTimeout(() => {
+            hideToast();
+        }, 3000);
+    }, [showToast])
 
     return (
         <SectionWrapper

@@ -8,6 +8,7 @@ export interface SectionProps extends BaseComponentProps {
   backgroundColor?: string;
   backgroundImage?: string;
   textAlignment?: AlignmentOption;
+  flexDirection?: "row" | "row-reverse" | "column" | "column-reverse";
   style?: React.CSSProperties;
 }
 

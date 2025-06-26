@@ -4,6 +4,7 @@ import { AnimatePresence, motion, Transition } from 'framer-motion';
 import { usePathname, useRouter } from 'next/navigation';
 import { ReactNode, createContext, useContext, useState, useTransition } from 'react';
 import { blurFade, fastTransition } from './transitionVariants';
+import { useUIStore } from '@/app/store';
 
 interface PageTransitionProviderProps {
     children: ReactNode;
@@ -49,17 +50,21 @@ const pageTransition: Transition = {
  * This provider creates a proper transition flow where exit animations
  * play BEFORE route changes, not after. Uses Next.js router properly.
  * 
+ * UPDATED: Now includes UI state cleanup to prevent modal/toast overlay bugs!
+ * 
  * How it works:
- * 1. transitionTo() starts exit animation on current page
- * 2. After exit completes, router.push() navigates to new route
- * 3. New page renders with enter animation
- * 4. Perfect timing, no jank!
+ * 1. transitionTo() resets UI state (closes modals, clears toasts)
+ * 2. Starts exit animation on current page
+ * 3. After exit completes, router.push() navigates to new route
+ * 4. New page renders with enter animation
+ * 5. Perfect timing, no jank, no overlay bugs!
  * 
  * Usage:
  * Wrap your app with <PageTransitionProvider> in layout.tsx or similar.
  * Then use the `usePageTransition` hook to get `transitionTo` function.
  * Everywhere you would normally use `router.push()`, use `transitionTo()` instead.
- * * Example:
+ * 
+ * Example:
  * onClick={() => transitionTo('/about')}
  */
 export const PageTransitionProvider = ({ children }: PageTransitionProviderProps) => {
@@ -68,10 +73,22 @@ export const PageTransitionProvider = ({ children }: PageTransitionProviderProps
     const [isPending, startTransition] = useTransition();
     const [isExiting, setIsExiting] = useState(false);
 
-    // Function to handle navigation with proper exit timing
+    // Get UI store functions for state cleanup
+    const { closeModal, resetUI } = useUIStore();
+
+    // Function to handle navigation with proper exit timing AND UI cleanup
     const transitionTo = (href: string) => {
         // Don't navigate if already transitioning or going to same route
         if (isExiting || isPending || href === pathname) return;
+
+        // 🔥 CRITICAL: Reset UI state FIRST to prevent overlay bugs!
+        // This closes any open modals, clears toasts, and resets menu state
+        resetUI();
+
+        // Also ensure modal is explicitly closed (double safety!)
+        closeModal();
+
+        console.log('UI state reset complete - starting route transition');
 
         // Start exit animation
         setIsExiting(true);
@@ -93,10 +110,12 @@ export const PageTransitionProvider = ({ children }: PageTransitionProviderProps
                 onExitComplete={() => {
                     if (typeof window !== 'undefined') {
                         window.scrollTo({ top: 0, behavior: 'smooth' });
+                        console.log('Exit animation complete - UI clean slate achieved!');
                     }
                 }}
             >
                 <motion.div
+                    id='page-transition'
                     key={pathname}
                     initial="initial"
                     animate={isExiting ? "out" : "in"}

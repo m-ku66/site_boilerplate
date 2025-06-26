@@ -27,6 +27,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     // That's it! Just a simple wrapper div with theme applied
     return (
         <div
+            id='theme-wrapper'
             className={currentTheme.typeFaceClass}
             style={{
                 backgroundColor: currentTheme.backgroundColor,

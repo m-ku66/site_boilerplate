@@ -52,7 +52,6 @@ export default function ShowcaseHomepage() {
       direction="vertical"
       showNavigation={true}
       navigationPosition="end"
-      className="h-screen"
       debug={false}
     >
       {/* Hero Section */}

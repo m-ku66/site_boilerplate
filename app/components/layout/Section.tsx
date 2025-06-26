@@ -12,9 +12,10 @@ export const Section: React.FC<SectionProps> = ({
     backgroundColor,
     backgroundImage,
     textAlignment = 'left',
+    flexDirection = 'row',
     ...props
 }) => {
-    // Generate alignment classes
+    // Generate alignment classes - simplified to avoid duplication
     const getAlignmentClasses = () => {
         switch (textAlignment) {
             case 'center':
@@ -49,77 +50,81 @@ export const Section: React.FC<SectionProps> = ({
         return widthMap[maxWidth] || maxWidth;
     };
 
-    // Handle minHeight - support both Tailwind classes and custom values
-    const getMinHeightStyles = () => {
-        if (!minHeight) return {};
+    // Simplified min-height handling - combines both class and style logic
+    const getMinHeightConfig = () => {
+        if (!minHeight) return { className: 'min-h-screen', style: {} };
 
-        // If it's a standard Tailwind class, let CSS handle it
+        // Standard Tailwind classes
         const tailwindClasses = ['min-h-screen', 'min-h-full', 'min-h-0', 'min-h-max', 'min-h-min', 'min-h-fit'];
+
         if (tailwindClasses.includes(minHeight)) {
-            return {};
+            return { className: minHeight, style: {} };
         }
 
-        // If it contains vh, vw, px, rem, etc., apply as inline style
+        // Custom values (vh, vw, px, rem, %)
         if (minHeight.includes('vh') || minHeight.includes('vw') || minHeight.includes('px') || minHeight.includes('rem') || minHeight.includes('%')) {
-            return { minHeight };
+            return { className: '', style: { minHeight } };
         }
 
-        return {};
+        // Fallback to default
+        return { className: 'min-h-screen', style: {} };
     };
 
-    const getMinHeightClass = () => {
-        if (!minHeight) return 'min-h-screen'; // default fallback
-
-        // If it's a standard Tailwind class, use it
-        const tailwindClasses = ['min-h-screen', 'min-h-full', 'min-h-0', 'min-h-max', 'min-h-min', 'min-h-fit'];
-        if (tailwindClasses.includes(minHeight)) {
-            return minHeight;
+    // Get flex direction class
+    const getFlexDirectionClass = () => {
+        switch (flexDirection) {
+            case 'row':
+                return 'flex-row';
+            case 'row-reverse':
+                return 'flex-row-reverse';
+            case 'column':
+                return 'flex-col';
+            case 'column-reverse':
+                return 'flex-col-reverse';
+            default:
+                return 'flex-row';
         }
-
-        // For custom values, we'll use inline styles instead
-        return '';
     };
 
-    // Build styles object for backgrounds and minHeight
+    // Get alignment classes for the section
+    const alignmentClasses = getAlignmentClasses();
+    const minHeightConfig = getMinHeightConfig();
+
+    // Build complete styles object
     const sectionStyles: React.CSSProperties = {
         backgroundColor: backgroundColor || undefined,
         backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
         backgroundSize: backgroundImage ? 'cover' : undefined,
         backgroundPosition: backgroundImage ? 'center' : undefined,
         backgroundRepeat: backgroundImage ? 'no-repeat' : undefined,
-        ...getMinHeightStyles(), // Add minHeight styles
+        ...minHeightConfig.style,
     };
+
+    // Consolidated content div classes - no duplication
+    const contentClasses = `
+        w-full flex flex-col
+        ${maxWidth ? `mx-auto ${getMaxWidthClass()}` : ''}
+        ${alignmentClasses}
+    `.trim();
 
     return (
         <section
             id={id}
             className={`
-        relative w-full flex flex-col
-        ${getMinHeightClass()}
-        ${padding}
-        ${getAlignmentClasses()}
-        ${className}
-      `}
+                relative w-full flex 
+                ${getFlexDirectionClass()}
+                ${minHeightConfig.className}
+                ${padding}
+                ${alignmentClasses}
+                ${className}
+            `.trim()}
             style={sectionStyles}
             {...props}
         >
-            {/* Content container with max width if specified */}
-            {maxWidth ? (
-                <div className={`
-          w-full mx-auto flex flex-col
-          ${getMaxWidthClass()}
-          ${getAlignmentClasses()}
-        `}>
-                    {children}
-                </div>
-            ) : (
-                <div className={`
-          w-full flex flex-col
-          ${getAlignmentClasses()}
-        `}>
-                    {children}
-                </div>
-            )}
+            {/* Single content container - no duplication */}
+            <div className={contentClasses}>
+                {children}
+            </div>
 
             {/* Background overlay if background image is present */}
             {backgroundImage && (

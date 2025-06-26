@@ -274,7 +274,7 @@ export const SectionWrapper: React.FC<SectionWrapperConfig> = ({
     };
 
     return (
-        <div className={`relative w-full h-full ${className}`}>
+        <div className={`relative w-full h-screen ${className}`}>
             {/* Main scroll container */}
             <motion.div
                 ref={containerRef}
