@@ -53,11 +53,6 @@ export default function ShowcaseHomepage() {
       showNavigation={true}
       navigationPosition="end"
       className="h-screen"
-      style={{
-        backgroundColor: currentTheme.backgroundColor,
-        color: currentTheme.foregroundColor,
-        fontFamily: currentTheme.typeFace,
-      }}
       debug={false}
     >
       {/* Hero Section */}
@@ -168,7 +163,7 @@ export default function ShowcaseHomepage() {
       >
         <div className="max-w-6xl mx-auto">
           <ScrollReveal animation="fade" direction="down-up" delay={0.2}>
-            <h2 className="text-5xl font-bold mb-6" style={{ color: currentTheme.foregroundColor, fontFamily: currentTheme.typeFace }}>Dynamic Theme System</h2>
+            <h2 className="text-5xl font-bold mb-6" style={{ color: currentTheme.foregroundColor }}>Dynamic Theme System</h2>
             <p className="text-xl mb-16 max-w-3xl mx-auto opacity-70" style={{ color: currentTheme.primaryColor }}>
               Switch between beautiful themes instantly. Each theme includes custom colors, typography, and Google Fonts.
             </p>
@@ -193,7 +188,7 @@ export default function ShowcaseHomepage() {
                 >
                   <div className="text-2xl mb-2">🎨</div>
                   <div className="font-semibold capitalize">{themeName}</div>
-                  <div className="text-sm opacity-70 font-mono">{theme.typeFace}</div>
+                  <div className="text-sm opacity-70 font-mono">{theme.typeFaceName}</div>
                 </motion.button>
               ))}
             </div>
@@ -241,7 +236,7 @@ currentTheme.typeFace`}
       >
         <div className="max-w-6xl mx-auto">
           <ScrollReveal animation="mask" direction="center" delay={0.2}>
-            <h2 className="text-5xl font-bold mb-6" style={{ color: currentTheme.foregroundColor, fontFamily: currentTheme.typeFace }}>Smooth Animations</h2>
+            <h2 className="text-5xl font-bold mb-6" style={{ color: currentTheme.foregroundColor }}>Smooth Animations</h2>
             <p className="text-xl mb-16 max-w-3xl mx-auto opacity-70" style={{ color: currentTheme.primaryColor }}>
               ScrollReveal components with fade and mask animations. Powered by Framer Motion.
             </p>
@@ -347,7 +342,7 @@ currentTheme.typeFace`}
       >
         <div className="max-w-6xl mx-auto">
           <ScrollReveal animation="fade" direction="down-up" delay={0.2}>
-            <h2 className="text-5xl font-bold mb-6" style={{ color: currentTheme.foregroundColor, fontFamily: currentTheme.typeFace }}>Interactive Features</h2>
+            <h2 className="text-5xl font-bold mb-6" style={{ color: currentTheme.foregroundColor }}>Interactive Features</h2>
             <p className="text-xl mb-16 max-w-3xl mx-auto opacity-70" style={{ color: currentTheme.primaryColor }}>
               Language switching, UI state management, and smooth scroll snapping.
             </p>
@@ -557,7 +552,6 @@ const text = t('key', 'fallback');`}
             >
               <h3 className="text-2xl font-bold mb-4" style={{
                 color: currentTheme.foregroundColor,
-                fontFamily: currentTheme.typeFace
               }}>Modal Component</h3>
               <p className="mb-6" style={{ color: currentTheme.secondaryColor }}>
                 This modal is managed by the UI store, uses UIElement for positioning, and includes smooth animations with Framer Motion.

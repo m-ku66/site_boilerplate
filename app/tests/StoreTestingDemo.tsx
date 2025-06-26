@@ -20,20 +20,10 @@ import { TestModeToggle } from './TestModeToggle';
 export const StoreTestingDemo = () => {
     // Store hooks
     const { ui, openModal, closeModal, showToast, toggleMenu, resetUI } = useUIStore();
-    const { currentTheme, availableThemes, setTheme, updateTheme, loadGoogleFont } = useThemeStore();
+    const { currentTheme, availableThemes, setTheme } = useThemeStore();
     const { currentLanguage, setLanguage, t } = useLanguageStore();
 
     const isHydrated = useHydration(); // Prevents hydration issues with all stores
-
-    // Apply theme to document via CSS custom properties
-    useEffect(() => {
-        document.documentElement.style.setProperty('--primary-color', currentTheme.primaryColor);
-        document.documentElement.style.setProperty('--secondary-color', currentTheme.secondaryColor);
-        document.documentElement.style.setProperty('--accent-color', currentTheme.accentColor);
-        document.documentElement.style.setProperty('--background-color', currentTheme.backgroundColor);
-        document.documentElement.style.setProperty('--foreground-color', currentTheme.foregroundColor);
-        document.documentElement.style.setProperty('--font-family', `"${currentTheme.typeFace}", sans-serif`);
-    }, [currentTheme]);
 
     // Track which section user is viewing (with toast notifications)
     const handleSectionChange = (index: number) => {
@@ -52,11 +42,6 @@ export const StoreTestingDemo = () => {
             onSectionChange={handleSectionChange}
             debug={false}
             className="h-screen"
-            style={{
-                backgroundColor: currentTheme.backgroundColor,
-                color: currentTheme.foregroundColor,
-                fontFamily: currentTheme.typeFace,
-            }}
         >
             {/* Hero Section - Tests ScrollReveal, Language Store, UI Store */}
             <Section
@@ -127,7 +112,7 @@ export const StoreTestingDemo = () => {
                         <h3 className="text-xl font-semibold mb-3" style={{ color: currentTheme.primaryColor }}>Theme Store</h3>
                         <p className="text-sm" style={{ color: currentTheme.secondaryColor }}>
                             Active: {currentTheme.name}<br />
-                            Font: {currentTheme.typeFace}<br />
+                            Font: {currentTheme.typeFaceName}<br />
                             Persisted: ✓
                         </p>
                     </div>

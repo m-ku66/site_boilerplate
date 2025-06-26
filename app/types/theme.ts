@@ -1,6 +1,7 @@
 export interface ThemeData {
   name: string;
-  typeFace: string;
+  typeFaceClass: string;
+  typeFaceName: string;
   primaryColor: string;
   secondaryColor: string;
   accentColor: string;
@@ -8,20 +9,36 @@ export interface ThemeData {
   foregroundColor: string;
 }
 
+// Font configuration with display names and CSS classes
+export const AVAILABLE_FONTS = [
+  { name: "Inter", className: "font-inter" },
+  { name: "Roboto", className: "font-roboto" },
+  { name: "Open Sans", className: "font-open-sans" },
+  { name: "Lato", className: "font-lato" },
+  { name: "Montserrat", className: "font-montserrat" },
+  { name: "Source Sans Pro", className: "font-source-sans" },
+  { name: "Raleway", className: "font-raleway" },
+  { name: "Nunito", className: "font-nunito" },
+  { name: "Poppins", className: "font-poppins" },
+  { name: "Playfair Display", className: "font-playfair" },
+] as const;
+
 export interface ThemeStore {
   currentTheme: ThemeData;
   availableThemes: Record<string, ThemeData>;
-  availableFonts: string[];
+  availableFonts: typeof AVAILABLE_FONTS;
   setTheme: (themeName: string) => void;
   updateTheme: (updates: Partial<ThemeData>) => void;
-  loadGoogleFont: (fontName: string) => void;
+  setFont: (fontClassName: string) => void;
+  cycleFont: () => void;
 }
 
-// Default themes for quick setup
+// Clean, simple default themes
 export const DEFAULT_THEMES: Record<string, ThemeData> = {
   light: {
     name: "light",
-    typeFace: "Inter",
+    typeFaceClass: "font-inter",
+    typeFaceName: "Inter",
     primaryColor: "#000000",
     secondaryColor: "#D3D3D3",
     accentColor: "#0066cc",
@@ -30,7 +47,8 @@ export const DEFAULT_THEMES: Record<string, ThemeData> = {
   },
   dark: {
     name: "dark",
-    typeFace: "Inter",
+    typeFaceClass: "font-inter",
+    typeFaceName: "Inter",
     primaryColor: "#ffffff",
     secondaryColor: "#cccccc",
     accentColor: "#4d9eff",
